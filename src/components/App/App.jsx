@@ -5,13 +5,15 @@ import { AppRoutes } from '../Routes/Routes'
 import { useDispatch } from 'react-redux'
 import { useEffect } from 'react'
 import { getCategories } from '../../store/categories/categoriesSlice'
+import { getProducts } from '../../store/products/productsSlice'
 
 function App() {
    const dispatch = useDispatch()
 
    useEffect(() => {
       dispatch(getCategories())
-   }, [])
+      dispatch(getProducts())
+   }, [dispatch])
 
    return (
       <div className='app'>

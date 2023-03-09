@@ -2,12 +2,12 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { BASE_URL } from '../../utils/constants'
 
-//асинхорнный запрос чтобы принимать категории с API
-export const getCategories = createAsyncThunk(
-   'categories/getCategories',
+//асинхорнный запрос чтобы принимать продукты с API
+export const getProducts = createAsyncThunk(
+   'products/getProducts',
    async (_, thunkAPI) => {
       try {
-         const { data } = await axios.get(`${BASE_URL}/categories`)
+         const { data } = await axios.get(`${BASE_URL}/products`)
 
          return data
       } catch (error) {
@@ -17,26 +17,28 @@ export const getCategories = createAsyncThunk(
    }
 )
 
-export const categoriesSlice = createSlice({
-   name: 'categories',
+export const productsSlice = createSlice({
+   name: 'products',
    initialState: {
       list: [],
+      //  filtered: [],
+      //  related: [],
       isLoading: false,
       error: null,
    },
    extraReducers: builder => {
-      builder.addCase(getCategories.pending, state => {
+      builder.addCase(getProducts.pending, state => {
          state.isLoading = true
       })
-      builder.addCase(getCategories.fulfilled, (state, action) => {
+      builder.addCase(getProducts.fulfilled, (state, action) => {
          state.list = action.payload
          state.isLoading = false
       })
-      builder.addCase(getCategories.rejected, (state, action) => {
+      builder.addCase(getProducts.rejected, (state, action) => {
          state.error = action.payload
          state.isLoading = false
       })
    },
 })
 
-export default categoriesSlice.reducer
+export default productsSlice.reducer
