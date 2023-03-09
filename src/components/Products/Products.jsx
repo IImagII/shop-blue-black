@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import styles from '../../styles/Products.module.css'
 import { Link } from 'react-router-dom'
 
@@ -7,7 +7,7 @@ export const Products = ({ title, products = [], amount, style = {} }) => {
 
    return (
       <section className={styles.products} style={style}>
-         <h2>{title && <h2>{title}</h2>}</h2>
+         {title && <h2>{title}</h2>}
          <div className={styles.list}>
             {list.map(
                ({ id, images, title, category: { name: cat }, price }) => (
