@@ -1,6 +1,7 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { BASE_URL } from '../../utils/constants'
+import { shuffle } from '../../utils/common'
 
 //асинхорнный запрос чтобы принимать продукты с API
 export const getProducts = createAsyncThunk(
@@ -22,7 +23,7 @@ export const productsSlice = createSlice({
    initialState: {
       list: [],
       filtered: [],
-      //  related: [],
+      related: [],
       isLoading: false,
       error: null,
    },
@@ -32,6 +33,14 @@ export const productsSlice = createSlice({
          state.filtered = state.list.filter(
             ({ price }) => price < action.payload
          )
+      },
+      getRelayedProducts: (state, { payload }) => {
+         // сначала мы отфильтруем по соответствующей категории(по id)
+         const list = state.list.filter(
+            ({ category: { id } }) => id === payload
+         )
+         //потом через функцию рамдомного тасования мы тусуем наши товары и передаем их как смежные
+         state.related = shuffle(list)
       },
    },
    extraReducers: builder => {
@@ -49,6 +58,6 @@ export const productsSlice = createSlice({
    },
 })
 
-export const { filterByPrice } = productsSlice.actions
+export const { filterByPrice, getRelayedProducts } = productsSlice.actions
 
 export default productsSlice.reducer

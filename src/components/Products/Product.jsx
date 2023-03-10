@@ -2,18 +2,28 @@ import React, { useEffect, useState } from 'react'
 import styles from '../../styles/Product.module.css'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../../utils/routes'
+import { useDispatch } from 'react-redux'
+import { addItemToCart } from '../../store/user/userSlice'
 
 const SIZES = [4, 4.5, 5] // это просто для примера как выбирать размер
 
-export const Product = ({ images = [], title, price, description }) => {
+export const Product = item => {
+   const { images = [], title, price, description } = item
    const [currentImage, setCurrentImage] = useState([]) // состояние для хранения и изменения картинки
    const [currentSize, setCurrentSize] = useState(SIZES[0]) // состояние для хранения и изменения размера
+
+   const dispatch = useDispatch()
 
    //для изменения картинки динамически
    useEffect(() => {
       if (!images.length) return
       setCurrentImage(images[0])
    }, [images])
+
+   //создадимфункцию добавления товара в корзину по нашему слайсу userSlice и вешаем ее на кнопку добавления в корзину
+   const addToCart = () => {
+      dispatch(addItemToCart(item)) //мы сюда передаем весь товар который пришел в наш компонент item
+   }
 
    return (
       <section className={styles.product}>
@@ -57,7 +67,9 @@ export const Product = ({ images = [], title, price, description }) => {
             </div>
             <p className={styles.description}>{description}</p>
             <div className={styles.actions}>
-               <button className={styles.add}>Добавить в корзину</button>
+               <button className={styles.add} onClick={addToCart}>
+                  Добавить в корзину
+               </button>
                <button className={styles.favourite}>
                   Добавить в избранное
                </button>
