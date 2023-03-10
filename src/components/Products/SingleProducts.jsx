@@ -2,6 +2,7 @@ import React, { useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useGetProductQuery } from '../../store/api/apiSlice'
 import { ROUTES } from '../../utils/routes'
+import { Product } from './Product'
 
 export const SingleProducts = () => {
    const { id } = useParams()
@@ -20,5 +21,11 @@ export const SingleProducts = () => {
       }
    }, [isLoading, isFetching, isSuccess])
 
-   return <div></div>
+   if (!data) return <section сlassName='preloader'>Загрузка......</section>
+
+   return (
+      <>
+         <Product {...data} />
+      </>
+   )
 }
