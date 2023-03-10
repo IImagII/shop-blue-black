@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useGetProductQuery } from '../../store/api/apiSlice'
 import { ROUTES } from '../../utils/routes'
@@ -6,43 +6,37 @@ import { Product } from './Product'
 import { Products } from './Products'
 import { useDispatch, useSelector } from 'react-redux'
 import { getRelayedProducts } from '../../store/products/productsSlice'
+import axios from 'axios'
+import { BASE_URL } from '../../utils/constants'
 
 export const SingleProducts = () => {
    const { id } = useParams()
 
-   const navigate = useNavigate()
+   const [cuttentProduct, setCurrentProduct] = useState('')
+   // const navigate = useNavigate()
 
    const dispatch = useDispatch()
 
-   //это получаем данные из запроса по технологии RTQ Query
-   const {
-      data = [],
-      isLoading,
-      isFetching,
-      isSuccess,
-   } = useGetProductQuery({ id }) // получаем из нашего хука RTK Query
-   console.log('data', data)
-   const { list, related } = useSelector(state => state.products) // тут будем содержаться состояние в котором храниться
-
-   //делаем для того чтобы перекинуть пользователя на главнуб страницу если запрос не срабовал
    useEffect(() => {
-      if (!isFetching && !isLoading && !isSuccess) {
-         navigate(ROUTES.HOME)
+      const getProductId = async id => {
+         const { data } = await axios.get(`${BASE_URL}/products/${id}`)
+         setCurrentProduct(data)
       }
-   }, [isLoading, isFetching, isSuccess, navigate])
+      getProductId(id)
+   }, [id])
+
+   const { list, related } = useSelector(state => state.products) // тут будем содержаться состояние в котором храниться
 
    //тут мы отправляем в наш producSlice где получаем нужную нам категорию и перемешиваем ее и возвращаем
    useEffect(() => {
-      if (!data || !list.length) return
-      dispatch(getRelayedProducts(data?.category?.id)) // чтобы брался именно id категории
-   }, [data, dispatch, list.length])
+      if (!cuttentProduct) return
+      dispatch(getRelayedProducts(cuttentProduct?.category?.id)) // чтобы брался именно id категории
+   }, [cuttentProduct, dispatch, list.length])
 
-   return !data ? (
-      <section сlassName='preloader'>Загрузка......</section>
-   ) : (
+   return (
       <>
-         <Product {...data} />
-         <Products products={related} amount={5} title='Популярное' />
+         <Product {...cuttentProduct} />
+         <Products products={related} amount={10} title='Популярные продукты' />
       </>
    )
 }
