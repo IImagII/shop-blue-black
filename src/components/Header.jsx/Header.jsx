@@ -4,8 +4,23 @@ import { Link } from 'react-router-dom'
 import { ROUTES } from '../../utils/routes'
 import logo from '../../images/logo.svg'
 import avatar from '../../images/avatar.jpg'
+import { useDispatch, useSelector } from 'react-redux'
+import { toggleForm } from '../../store/user/userSlice'
 
 export const Header = () => {
+   const { currentUser } = useSelector(state => state.user) // вытягиваем из сосотяния чтобы понять есть у нас user чтобы показывать модальное окно
+
+   const dispatch = useDispatch()
+
+   //функция для отображения модального окна
+   const handleClick = () => {
+      //делаем проверку что если у нас нет пользователя то должно поменяться состояние коотре есть в slice (showForm)
+      if (!currentUser) {
+         //тут берем reducer для смены на другое состояние для показа модального окна
+         dispatch(toggleForm(true))
+      }
+   }
+
    return (
       <div className={styles.header}>
          <div className={styles.logo}>
@@ -15,7 +30,7 @@ export const Header = () => {
          </div>
 
          <div className={styles.info}>
-            <div className={styles.user}>
+            <div className={styles.user} onClick={handleClick}>
                <div
                   className={styles.avatar}
                   style={{ backgroundImage: `url(${avatar})` }}

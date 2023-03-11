@@ -13,7 +13,6 @@ export const SingleProducts = () => {
    const { id } = useParams()
 
    const [cuttentProduct, setCurrentProduct] = useState('')
-   const navigate = useNavigate()
 
    const dispatch = useDispatch()
 

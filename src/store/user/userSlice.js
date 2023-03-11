@@ -2,14 +2,30 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { BASE_URL } from '../../utils/constants'
 
+//создаем функцию коотраябудет отвечать за регистрацию пользователя
+export const createUser = createAsyncThunk(
+   'user/createUser',
+   async (payload, thunkAPI) => {
+      try {
+         const { data } = await axios.post(`${BASE_URL}/users`, payload)
+         return data
+      } catch (error) {
+         console.log(error)
+         return thunkAPI.rejectWithValue(error)
+      }
+   }
+)
+
 //для авторизации пользователя
 const userSlice = createSlice({
    name: 'user',
    initialState: {
-      currentUser: [],
+      currentUser: null,
       cart: [],
       isLoading: false,
       error: null,
+      formType: 'signup',
+      showForm: false, // для отображения или скрытия формы для авторизации
    },
    reducers: {
       //для того чтобы если человек добавляем товар который уже есть в корзине мы должны менять ему только количество
@@ -29,9 +45,26 @@ const userSlice = createSlice({
          } else newCart.push({ ...payload, quantity: 1 })
          state.cart = newCart
       },
+      //смена состояниядля показа модального окна
+      toggleForm: (state, action) => {
+         state.showForm = action.payload
+      },
+   },
+   extraReducers: builder => {
+      builder.addCase(createUser.pending, state => {
+         state.isLoading = true
+      })
+      builder.addCase(createUser.fulfilled, (state, action) => {
+         state.currentUser = action.payload
+         state.isLoading = false
+      })
+      builder.addCase(createUser.rejected, (state, action) => {
+         state.error = action.payload
+         state.isLoading = false
+      })
    },
 })
 
-export const { addItemToCart } = userSlice.actions
+export const { addItemToCart, toggleForm } = userSlice.actions
 
 export default userSlice.reducer
