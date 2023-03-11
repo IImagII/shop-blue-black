@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
-import styles from '../../styles/User.module.css'
 import { useDispatch } from 'react-redux'
-import { createUser, login, toggleForm } from '../../store/user/userSlice'
+import { loginUser, signup } from '../../store/user/userSlice'
+import styles from '../../styles/User.module.css'
 
-//компонент для отправки данных для регитсрации
-export const UserSignuoForm = ({ closeForm, toggleCurrentFormType }) => {
+//компонент дл самой атворизации
+export const UserLoginForm = ({ closeForm, toggleCurrentFormType }) => {
    const [values, setValues] = useState({
-      name: '',
       email: '',
       password: '',
-      avatar: '',
    })
 
    const dispatch = useDispatch()
@@ -17,11 +15,6 @@ export const UserSignuoForm = ({ closeForm, toggleCurrentFormType }) => {
    //функция которая меняет все состояние в объекте сразу
    const handleChange = ({ target: { value, name } }) => {
       setValues({ ...values, [name]: value })
-   }
-
-   //функция закртия окна
-   const handleClickClose = () => {
-      dispatch(toggleForm(false))
    }
 
    //функция которая будет отправлять эту форму и создавать пользователя
@@ -33,13 +26,13 @@ export const UserSignuoForm = ({ closeForm, toggleCurrentFormType }) => {
 
       if (!isNotEmpty) return
 
-      dispatch(createUser(values)) // передаем то чт оу нас в форме
+      dispatch(loginUser(values)) // передаем то чт оу нас в форме
       closeForm() // это для того чтобы формазакрылась после того как будет отослана
    }
 
    return (
       <div className={styles.wrapper}>
-         <div className={styles.close} onClick={handleClickClose}>
+         <div className={styles.close} onClick={closeForm}>
             <svg className='icon'>
                <use xlinkHref={`${process.env.PUBLIC_URL}/sprite.svg#close`} />
             </svg>
@@ -69,36 +62,15 @@ export const UserSignuoForm = ({ closeForm, toggleCurrentFormType }) => {
                   required
                />
             </div>
-            <div className={styles.group}>
-               <input
-                  type='password'
-                  name='password'
-                  placeholder='password'
-                  value={values.password}
-                  autoComplete='off'
-                  onChange={handleChange}
-                  required
-               />
-            </div>
-            <div className={styles.group}>
-               <input
-                  type='avatar'
-                  name='avatar'
-                  placeholder='avatar'
-                  value={values.avatar}
-                  autoComplete='off'
-                  onChange={handleChange}
-                  required
-               />
-            </div>
+
             <div
                className={styles.link}
-               onClick={() => toggleCurrentFormType(login)}
+               onClick={() => toggleCurrentFormType(signup)}
             >
-               Уже есть аккаунт?
+               Создать аккаунт?
             </div>
             <button type='submit' className={styles.submit}>
-               Создать аккаунт
+               Войти
             </button>
          </form>
       </div>

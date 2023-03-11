@@ -16,16 +16,41 @@ export const createUser = createAsyncThunk(
    }
 )
 
+//создаем функцию для отправки данных для авторизации
+export const loginUser = createAsyncThunk(
+   'user/loginUser',
+   async (payload, thunkAPI) => {
+      try {
+         //тут мы отправляем данные для сверки и назад должны получить токен
+         const res = await axios.post(`${BASE_URL}/auth/login`, payload)
+
+         // тут мы отправляем данные уже с полученным токеном
+         const { data } = await axios.get(
+            (`${BASE_URL}/auth/profile`,
+            {
+               headers: { Authorization: `Bearer {${res.access_token}}` },
+            })
+         )
+         return data
+      } catch (error) {
+         console.log(error)
+         return thunkAPI.rejectWithValue(error)
+      }
+   }
+)
+
+export const signup = 'signup' // это для состояния которая будет видна форма регистрации
+export const login = 'login' // это для состояния которая будет видна форма авторизации
 //для авторизации пользователя
 const userSlice = createSlice({
    name: 'user',
    initialState: {
-      currentUser: null,
+      currentUser: null, // данный пользователя который ввошел(уже авторизирован)
       cart: [],
       isLoading: false,
       error: null,
-      formType: 'signup',
-      showForm: false, // для отображения или скрытия формы для авторизации
+      formType: signup, //состояние с помощью которого мы меняет нашу форму с регистрацуии на авторизацию
+      showForm: false, // для отображения или скрытия формы для
    },
    reducers: {
       //для того чтобы если человек добавляем товар который уже есть в корзине мы должны менять ему только количество
@@ -49,22 +74,26 @@ const userSlice = createSlice({
       toggleForm: (state, action) => {
          state.showForm = action.payload
       },
+      // смена вводимой формы или регистрация или авторизация
+      toggleFormType: (state, action) => {
+         state.formType = action.payload
+      },
    },
    extraReducers: builder => {
-      builder.addCase(createUser.pending, state => {
-         state.isLoading = true
-      })
+      //для созданияпользователя
       builder.addCase(createUser.fulfilled, (state, action) => {
          state.currentUser = action.payload
          state.isLoading = false
       })
-      builder.addCase(createUser.rejected, (state, action) => {
-         state.error = action.payload
+
+      //для авторизации пользователя
+      builder.addCase(loginUser.fulfilled, (state, action) => {
+         state.currentUser = action.payload
          state.isLoading = false
       })
    },
 })
 
-export const { addItemToCart, toggleForm } = userSlice.actions
+export const { addItemToCart, toggleForm, toggleFormType } = userSlice.actions
 
 export default userSlice.reducer

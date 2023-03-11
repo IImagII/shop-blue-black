@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from '../../styles/Header.module.css'
 import { Link } from 'react-router-dom'
 import { ROUTES } from '../../utils/routes'
@@ -10,6 +10,12 @@ import { toggleForm } from '../../store/user/userSlice'
 export const Header = () => {
    const { currentUser } = useSelector(state => state.user) // вытягиваем из сосотяния чтобы понять есть у нас user чтобы показывать модальное окно
 
+   const [values, setValues] = useState({
+      // создаем состояние чтобы менять его поторм когда мы будет авторизированы
+      name: 'Guest',
+      avatar: avatar,
+   })
+
    const dispatch = useDispatch()
 
    //функция для отображения модального окна
@@ -20,6 +26,12 @@ export const Header = () => {
          dispatch(toggleForm(true))
       }
    }
+
+   //пишем функцию которая будет менять нам аватарку и имя на то которое мы зарегестрировалисьесли мы зарегестрировалиь
+   useEffect(() => {
+      if (!currentUser) return
+      setValues(currentUser)
+   }, [currentUser])
 
    return (
       <div className={styles.header}>
@@ -33,9 +45,9 @@ export const Header = () => {
             <div className={styles.user} onClick={handleClick}>
                <div
                   className={styles.avatar}
-                  style={{ backgroundImage: `url(${avatar})` }}
+                  style={{ backgroundImage: `url(${values.avatar})` }}
                />
-               <div className={styles.username}>GUEST</div>
+               <div className={styles.username}>{values.name}</div>
             </div>
             <form className={styles.form}>
                <div className={styles.icon}>
