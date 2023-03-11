@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import styles from '../../styles/Header.module.css'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { ROUTES } from '../../utils/routes'
 import logo from '../../images/logo.svg'
 import avatar from '../../images/avatar.jpg'
@@ -17,6 +17,7 @@ export const Header = () => {
    })
 
    const dispatch = useDispatch()
+   const navigate = useNavigate()
 
    //функция для отображения модального окна
    const handleClick = () => {
@@ -24,7 +25,7 @@ export const Header = () => {
       if (!currentUser) {
          //тут берем reducer для смены на другое состояние для показа модального окна
          dispatch(toggleForm(true))
-      }
+      } else navigate(ROUTES.PROFILE) // делаем перенаправление на профильпользователя если он уже зарегестрирован
    }
 
    //пишем функцию которая будет менять нам аватарку и имя на то которое мы зарегестрировалисьесли мы зарегестрировалиь

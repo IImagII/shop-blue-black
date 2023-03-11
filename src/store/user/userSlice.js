@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios from 'axios'
 import { BASE_URL } from '../../utils/constants'
 
+/*========================Thunks==========================*/
 //создаем функцию коотраябудет отвечать за регистрацию пользователя
 export const createUser = createAsyncThunk(
    'user/createUser',
@@ -25,11 +26,28 @@ export const loginUser = createAsyncThunk(
          const res = await axios.post(`${BASE_URL}/auth/login`, payload)
 
          // тут мы отправляем данные уже с полученным токеном
-         const { data } = await axios.get(
-            (`${BASE_URL}/auth/profile`,
-            {
-               headers: { Authorization: `Bearer {${res.access_token}}` },
-            })
+         const { data } = await axios(`${BASE_URL}/auth/profile`, {
+            headers: {
+               Authorization: `Bearer ${res.data.access_token}`,
+            },
+         })
+
+         return data
+      } catch (err) {
+         console.log(err)
+         return thunkAPI.rejectWithValue(err)
+      }
+   }
+)
+
+//создаем функцию для обновления данных профиля пользователя
+export const updateUser = createAsyncThunk(
+   'user/updateUser',
+   async (payload, thunkAPI) => {
+      try {
+         const { data } = await axios.put(
+            `${BASE_URL}/users/${payload.id}`,
+            payload
          )
          return data
       } catch (error) {
@@ -38,9 +56,17 @@ export const loginUser = createAsyncThunk(
       }
    }
 )
+/*========================END-Thunks==========================*/
 
+//для смены формы
 export const signup = 'signup' // это для состояния которая будет видна форма регистрации
 export const login = 'login' // это для состояния которая будет видна форма авторизации
+
+//обна функция для регистрации и авторизации
+const addCurrentUser = (state, { payload }) => {
+   state.currentUser = payload
+}
+
 //для авторизации пользователя
 const userSlice = createSlice({
    name: 'user',
@@ -81,16 +107,13 @@ const userSlice = createSlice({
    },
    extraReducers: builder => {
       //для созданияпользователя
-      builder.addCase(createUser.fulfilled, (state, action) => {
-         state.currentUser = action.payload
-         state.isLoading = false
-      })
+      builder.addCase(createUser.fulfilled, addCurrentUser)
 
       //для авторизации пользователя
-      builder.addCase(loginUser.fulfilled, (state, action) => {
-         state.currentUser = action.payload
-         state.isLoading = false
-      })
+      builder.addCase(loginUser.fulfilled, addCurrentUser)
+
+      //для обновления профиля пользователя
+      builder.addCase(updateUser.fulfilled, addCurrentUser)
    },
 })
 

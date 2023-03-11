@@ -24,6 +24,8 @@ export const UserForm = () => {
       <>
          {/* так добавляем затенение всего контента */}
          <div className={styles.overlay} onClick={closeForm} />
+
+         {/* тут мы сделали проверку какую форму показывать нашему пользователю в зависимости от переменной signup или login */}
          {formType === 'signup' ? (
             <UserSignuoForm
                closeForm={closeForm}

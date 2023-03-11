@@ -53,10 +53,10 @@ export const UserLoginForm = ({ closeForm, toggleCurrentFormType }) => {
             </div>
             <div className={styles.group}>
                <input
-                  type='name'
-                  name='name'
-                  placeholder='name'
-                  value={values.name}
+                  type='password'
+                  name='password'
+                  placeholder='password'
+                  value={values.password}
                   autoComplete='off'
                   onChange={handleChange}
                   required
