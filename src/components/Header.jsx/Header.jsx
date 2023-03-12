@@ -6,6 +6,7 @@ import logo from '../../images/logo.svg'
 import avatar from '../../images/avatar.jpg'
 import { useDispatch, useSelector } from 'react-redux'
 import { toggleForm } from '../../store/user/userSlice'
+import { useGetProductsQuery } from '../../store/api/apiSlice'
 
 export const Header = () => {
    const { currentUser } = useSelector(state => state.user) // вытягиваем из сосотяния чтобы понять есть у нас user чтобы показывать модальное окно
@@ -15,6 +16,11 @@ export const Header = () => {
       name: 'Guest',
       avatar: avatar,
    })
+
+   const [searchValue, setSearchValue] = useState('') //состояние для поиска товаров
+
+   // достаем из apiSlice.js наш запрос с фильтрацией
+   const { data, isLoading } = useGetProductsQuery({ title: searchValue })
 
    const dispatch = useDispatch()
    const navigate = useNavigate()
@@ -33,6 +39,11 @@ export const Header = () => {
       if (!currentUser) return
       setValues(currentUser)
    }, [currentUser])
+
+   //функция для реализации поиска товаров
+   const handleSearch = ({ target: { value } }) => {
+      setSearchValue(value)
+   }
 
    return (
       <div className={styles.header}>
@@ -65,11 +76,37 @@ export const Header = () => {
                      name='search'
                      placeholder='Поиск по сайту.....'
                      autoComplete='off'
-                     onChange={() => {}}
-                     value=''
+                     onChange={handleSearch}
+                     value={searchValue}
                   />
                </div>
-               {false && <div className={styles.box}></div>}
+               {/* тут показана форма которая выводит то что мы ищем в поиске */}
+               {searchValue && (
+                  <div className={styles.box}>
+                     {isLoading
+                        ? 'Loading'
+                        : !data.length
+                        ? 'Ничего не найдено'
+                        : data.map(({ title, images, id }) => {
+                             return (
+                                <Link
+                                   to={`/products/${id}`}
+                                   key={id}
+                                   className={styles.item}
+                                   onClick={() => setSearchValue('')} //для очистки поля "Поиска"
+                                >
+                                   <div
+                                      className={styles.image}
+                                      style={{
+                                         backgroundImage: `url(${images[0]})`,
+                                      }}
+                                   />
+                                   <div className={styles.title}>{title}</div>
+                                </Link>
+                             )
+                          })}
+                  </div>
+               )}
             </form>
             <div className={styles.account}>
                {/* иконка своего аккаунта */}
