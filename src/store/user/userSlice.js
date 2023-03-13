@@ -104,6 +104,11 @@ const userSlice = createSlice({
       toggleFormType: (state, action) => {
          state.formType = action.payload
       },
+
+      //удаление товара из корзины
+      removeItemFromCart: (state, { payload }) => {
+         state.cart = state.cart.filter(({ id }) => id !== payload)
+      },
    },
    extraReducers: builder => {
       //для созданияпользователя
@@ -117,6 +122,7 @@ const userSlice = createSlice({
    },
 })
 
-export const { addItemToCart, toggleForm, toggleFormType } = userSlice.actions
+export const { addItemToCart, toggleForm, toggleFormType, removeItemFromCart } =
+   userSlice.actions
 
 export default userSlice.reducer

@@ -5,11 +5,15 @@ import { ROUTES } from '../../utils/routes'
 import { Home } from '../../pages/Home/Home'
 import { SingleProducts } from '../Products/SingleProducts'
 import { Profile } from '../Profile/Profile'
+import { SingleCategory } from '../Categories/SingleCategory'
+import { Cart } from '../Cart/Cart'
 
 export const AppRoutes = () => (
    <Routes>
       <Route index element={<Home />} />
       <Route path={ROUTES.PRODUCT} element={<SingleProducts />} />
       <Route path={ROUTES.PROFILE} element={<Profile />} />
+      <Route path={ROUTES.CATEGORY} element={<SingleCategory />} />
+      <Route path={ROUTES.CART} element={<Cart />} />
    </Routes>
 )

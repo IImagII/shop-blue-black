@@ -10,3 +10,6 @@ export const buildUrl = (url, params) => {
    })
    return urlWithParams
 }
+
+//функция которая сичтает общюю цену добавленого товара в корзину
+export const sumBy = arr => arr.reduce((prev, cur) => prev + cur, 0)

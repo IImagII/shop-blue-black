@@ -9,7 +9,7 @@ import { toggleForm } from '../../store/user/userSlice'
 import { useGetProductsQuery } from '../../store/api/apiSlice'
 
 export const Header = () => {
-   const { currentUser } = useSelector(state => state.user) // вытягиваем из сосотяния чтобы понять есть у нас user чтобы показывать модальное окно
+   const { currentUser, cart } = useSelector(state => state.user) // вытягиваем из сосотяния чтобы понять есть у нас user чтобы показывать модальное окно
 
    const [values, setValues] = useState({
       // создаем состояние чтобы менять его поторм когда мы будет авторизированы
@@ -126,7 +126,9 @@ export const Header = () => {
                      />
                   </svg>
                   {/* оотбражение количества которое положили в корзину */}
-                  <span className={styles.count}>2</span>
+                  {cart.length && (
+                     <span className={styles.count}>{cart.length}</span>
+                  )}
                </Link>
             </div>
          </div>

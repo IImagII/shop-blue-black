@@ -15,10 +15,19 @@ export const apiSlice = createApi({
       }),
       //для реализации поиска
       getProducts: builder.query({
-         query: params => buildUrl('/products', params), // тут используется фкастомнаяфункция которая формирует url из common.js
+         query: params => buildUrl('/products/', params), // тут используется фкастомнаяфункция которая формирует url из common.js
          providesTags: ['Products'],
+      }),
+      //это для получения конкретной категории
+      getCategories: builder.query({
+         query: ({ id }) => `/categories/${id}`,
+         providesTags: ['categories'],
       }),
    }),
 })
 
-export const { useGetProductQuery, useGetProductsQuery } = apiSlice // в данном случае мы получили хуки
+export const {
+   useGetProductQuery,
+   useGetProductsQuery,
+   useGetCategoriesQuery,
+} = apiSlice // в данном случае мы получили хуки
