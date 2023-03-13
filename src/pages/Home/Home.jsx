@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import styles from '../../styles/Home.module.css'
 import { Poster } from '../../components/Poster/Poster'
 import { Products } from '../../components/Products/Products'
 import { useDispatch, useSelector } from 'react-redux'

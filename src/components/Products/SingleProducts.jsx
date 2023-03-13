@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
-import { useGetProductQuery } from '../../store/api/apiSlice'
-import { ROUTES } from '../../utils/routes'
+import { useParams } from 'react-router-dom'
 import { Product } from './Product'
 import { Products } from './Products'
 import { useDispatch, useSelector } from 'react-redux'
